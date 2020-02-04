@@ -5,32 +5,18 @@
             <button class="btnT">Add Todo</button>
         </form>
             <div class="list" v-for="todo in todos" v-bind:key="todo.id">
-                {{todo.title}}
+                {{todo.todo}}
             </div>
     </div>
 </template>
 
 <script>
+import axios from "axios";
     export default {
         data(){
             return{
                 todoText:'',
-                todos:[
-                    {
-                        id:1,
-                        title:'Eat lunch',
-                        status: true
-                    },{
-                        id:2,
-                        title:'Eat Dinner',
-                        status: false
-                    },{
-                        id:3,
-                        title:'Eat Snack',
-                        status: true
-                    },
-                ],
-                nextId:4
+                todos:[],
             }
         },
         methods:{
@@ -38,14 +24,24 @@
                 if(!this.todoText){
                     return alert('please enter a todo');
                 } 
-                this.todos.push({
-                    id:this.nextId++,
-                    title:this.todoText,
-                    status:false
-                });
+                const todos ={
+                    todo:this.todoText,
+                    status:0
+                };
+                console.log('payload',todos);
+                axios
+                .post("api/todo",todos)
+                .then(res => this.todos.push(res.data[0]))
+                .catch(err => alert(err));
                 this.todoText='';
-
             },
+
+
+        },
+        created() {
+        axios.get('/api/todos')
+        .then(res => this.todos = res.data.todos)
+        .catch(err => console.log(err));
         }
     }
 </script>

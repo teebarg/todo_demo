@@ -1908,6 +1908,8 @@ module.exports = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -1920,39 +1922,43 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       todoText: '',
-      todos: [{
-        id: 1,
-        title: 'Eat lunch',
-        status: true
-      }, {
-        id: 2,
-        title: 'Eat Dinner',
-        status: false
-      }, {
-        id: 3,
-        title: 'Eat Snack',
-        status: true
-      }],
-      nextId: 4
+      todos: []
     };
   },
   methods: {
     addTodos: function addTodos() {
+      var _this = this;
+
       if (!this.todoText) {
         return alert('please enter a todo');
       }
 
-      this.todos.push({
-        id: this.nextId++,
-        title: this.todoText,
-        status: false
+      var todos = {
+        todo: this.todoText,
+        status: 0
+      };
+      console.log('payload', todos);
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("api/todo", todos).then(function (res) {
+        return _this.todos.push(res.data[0]);
+      })["catch"](function (err) {
+        return alert(err);
       });
       this.todoText = '';
     }
+  },
+  created: function created() {
+    var _this2 = this;
+
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/todos').then(function (res) {
+      return _this2.todos = res.data.todos;
+    })["catch"](function (err) {
+      return console.log(err);
+    });
   }
 });
 
@@ -20245,7 +20251,7 @@ var render = function() {
       _vm._v(" "),
       _vm._l(_vm.todos, function(todo) {
         return _c("div", { key: todo.id, staticClass: "list" }, [
-          _vm._v("\n            " + _vm._s(todo.title) + "\n        ")
+          _vm._v("\n            " + _vm._s(todo.todo) + "\n        ")
         ])
       })
     ],
