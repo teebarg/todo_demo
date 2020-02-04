@@ -18,4 +18,12 @@ class TodoController extends Controller
         );
     }
 
+    public function store(){
+        $data = $this->validate(request(), [
+            'todo'=>'required|min:1',
+            'status' => 'required|boolean'
+        ]);
+       $result =  Todo::create($data);
+       return response()->json([$result], 200);
+    }
 }
