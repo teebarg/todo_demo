@@ -34,19 +34,22 @@ services:
     networks:
       - app-network
 
-  #Postgress Service
+  #MySQL Service
   db:
-    image: postgres
+    image: mysql:5.7.22
     container_name: todo_db
     restart: unless-stopped
+    tty: true
     ports:
-      - "407:5432"
+      - "402:3306"
     environment:
-      POSTGRES_USER: root
-      POSTGRES_DB: todo
-      POSTGRES_PASSWORD: password
+      MYSQL_DATABASE: todo
+      MYSQL_ROOT_PASSWORD: password
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
     volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+      - dbdata:/var/lib/mysql/
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
     networks:
       - app-network
 
